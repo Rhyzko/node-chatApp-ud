@@ -15,20 +15,31 @@ app.use(publicPath);
 
 io.on('connection', (socket) => {
     console.log('New user connected');
-
     socket.emit('newMessage', {
-        from:'newUserConnected',
-        text:'Welcome to chat!',
-        createdAt: new Date().getDate()
+        from:'Admin',
+        text:'Welcome to the chat App',
+        createdAt: new Date().getTime()
+    })
+
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'new user joined',
+        createdAt: new Date().getTime()
     });
 
     socket.on('createMessage', (createdMessage) => {
         console.log('createMessage:', createdMessage);
-        socket.emit('newMessage', {
+        // io.emit('newMessage', {
+        //     from: createdMessage.from,
+        //     text: createdMessage.text,
+        //     createdAt: new Date().getTime()
+        // });
+
+        socket.broadcast.emit('createMessage', {
             from: createdMessage.from,
             text: createdMessage.text,
-            createdAt: new Date().getDate() 
-        })
+            createdAt: new Date().getTime()
+        });
     });
     socket.on('disconnect', () => {
         console.log('User was disconnected');
