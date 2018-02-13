@@ -16,9 +16,23 @@ app.use(publicPath);
 io.on('connection', (socket) => {
     console.log('New user connected');
 
+    socket.emit('newMessage', {
+        from:'newUserConnected',
+        text:'Welcome to chat!',
+        createdAt: new Date().getDate()
+    });
+
+    socket.on('createMessage', (createdMessage) => {
+        console.log('createMessage:', createdMessage);
+        socket.emit('newMessage', {
+            from: createdMessage.from,
+            text: createdMessage.text,
+            createdAt: new Date().getDate() 
+        })
+    });
     socket.on('disconnect', () => {
         console.log('User was disconnected');
-    })
+    });
 });
 
 server.listen(port, () => {
